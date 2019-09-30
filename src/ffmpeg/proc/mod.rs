@@ -1,4 +1,5 @@
 use std::io;
+use std::path::Path;
 use std::process::{Command, Output};
 use std::str::{FromStr, Utf8Error};
 
@@ -25,7 +26,17 @@ impl From<Utf8Error> for OutputError {
     }
 }
 
-pub fn run(name: &str, args: Vec<&str>) -> Result<Output, OutputError> {
+#[allow(dead_code)]
+fn debug_cmd(name: &str, args: &Vec<String>) {
+    println!(
+        "{} {}",
+        name,
+        args.into_iter()
+            .fold(String::new(), |acc, x| format!("{} {}", acc, x))
+    );
+}
+
+pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
     use std::str::from_utf8;
     let output = match Command::new(name).args(args).output() {
         Ok(x) => x,
@@ -50,6 +61,21 @@ pub fn dump(output: Output) -> Result<String, OutputError> {
     use std::str::from_utf8;
     let text = from_utf8(output.stdout.as_slice())?;
     Ok(String::from(text))
+}
+
+pub fn write_to_file(path: &Path, output: Output) -> Result<(), OutputError> {
+    use std::error::Error;
+    use std::fs::File;
+    use std::io::Write;
+
+    let display = path.display();
+    let bytes = output.stdout.as_slice();
+    let mut file = match File::create(path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why.description()),
+        Ok(file) => file,
+    };
+
+    file.write_all(bytes).map_err(|e| OutputError::from(e))
 }
 
 pub fn parse_from_output<T>(output: Output) -> Result<T, OutputError>

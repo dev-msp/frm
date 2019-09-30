@@ -1,4 +1,5 @@
 extern crate clap;
+extern crate rayon;
 
 mod ffmpeg;
 
@@ -8,25 +9,22 @@ type CommandResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
 
 fn handle_duration(matches: &clap::ArgMatches) -> CommandResult<f32> {
     match matches.value_of("INPUT") {
-        Some(file_path) => Ok(ffmpeg::duration(file_path)?),
+        Some(file_path) => Ok(ffmpeg::duration(&String::from(file_path))?),
         None => Err(Box::new(FfmpegError::ArgumentError)),
     }
 }
 
-fn handle_frame(matches: &clap::ArgMatches) -> CommandResult<String> {
-    use ffmpeg::frame::Frame;
+fn handle_sample(matches: &clap::ArgMatches) -> CommandResult {
+    use ffmpeg::sample;
 
-    let input = matches.value_of("INPUT").unwrap();
-    let output = matches.value_of("OUTPUT").unwrap();
-    let timecode_str = matches.value_of("TIMECODE").unwrap();
-
-    let timecode = match timecode_str.parse() {
-        Ok(timecode) => timecode,
-        Err(e) => return Err(Box::new(e)),
-    };
-
-    let s = Frame::new(input, timecode)?.write(output)?;
-    Ok(s.clone())
+    let input = matches.value_of("INPUT").map(|i| String::from(i)).unwrap();
+    if let Some(frames) = matches.value_of("FRAMES") {
+        let f = frames.parse()?;
+        sample::sample_video(input, f)?;
+        Ok(())
+    } else {
+        Err(Box::new(FfmpegError::ArgumentError))
+    }
 }
 
 fn main() -> CommandResult {
@@ -40,25 +38,18 @@ fn main() -> CommandResult {
             ),
         )
         .subcommand(
-            SubCommand::with_name("frame")
-                .arg(
-                    Arg::with_name("TIMECODE")
-                        .short("-t")
-                        .takes_value(true)
-                        .required(true)
-                        .help("the timecode to seek to in INPUT"),
-                )
+            SubCommand::with_name("sample")
                 .arg(
                     Arg::with_name("INPUT")
                         .required(true)
                         .help("Sets the input file to use"),
                 )
                 .arg(
-                    Arg::with_name("OUTPUT")
-                        .short("-o")
+                    Arg::with_name("FRAMES")
+                        .short("-n")
                         .takes_value(true)
-                        .required(true)
-                        .help("Sets the output file to write to"),
+                        .default_value("10")
+                        .help("count of frames to sample"),
                 ),
         )
         .get_matches();
@@ -68,8 +59,8 @@ fn main() -> CommandResult {
             println!("{}", handle_duration(sub_m)?);
             Ok(())
         }
-        ("frame", Some(sub_m)) => {
-            println!("{}", handle_frame(sub_m)?);
+        ("sample", Some(sub_m)) => {
+            println!("{}", handle_sample(sub_m).map(|_| "Good")?);
             Ok(())
         }
         _ => Err(Box::new(FfmpegError::ArgumentError)),
