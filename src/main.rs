@@ -18,13 +18,22 @@ fn handle_sample(matches: &clap::ArgMatches) -> CommandResult {
     use ffmpeg::sample;
 
     let input = matches.value_of("INPUT").map(|i| String::from(i)).unwrap();
-    if let Some(frames) = matches.value_of("FRAMES") {
-        let f = frames.parse()?;
-        sample::sample_video(input, f)?;
-        Ok(())
-    } else {
-        Err(Box::new(FfmpegError::ArgumentError))
-    }
+    let n: u32 = matches
+        .value_of("FRAMES")
+        .map(|s| s.parse())
+        .expect("required arg FRAMES missing")
+        .map_err(|_| FfmpegError::ArgumentError)?;
+
+    let start: u32 = matches
+        .value_of("START")
+        .map(|s| s.parse())
+        .expect("required arg START missing")
+        .map_err(|_| FfmpegError::ArgumentError)?;
+
+    let end: Option<u32> = matches.value_of("END").map(|s| s.parse()).transpose()?;
+
+    sample::sample_video(&input, &sample::SampleWindow { start, end, n })?;
+    Ok(())
 }
 
 fn main() -> CommandResult {
@@ -45,11 +54,24 @@ fn main() -> CommandResult {
                         .help("Sets the input file to use"),
                 )
                 .arg(
+                    Arg::with_name("START")
+                        .short("-s")
+                        .takes_value(true)
+                        .default_value("0")
+                        .help("timecode at which to start collecting frames"),
+                )
+                .arg(
+                    Arg::with_name("END")
+                        .short("-e")
+                        .takes_value(true)
+                        .help("timecode at which to stop collecting frames"),
+                )
+                .arg(
                     Arg::with_name("FRAMES")
                         .short("-n")
                         .takes_value(true)
                         .default_value("10")
-                        .help("count of frames to sample"),
+                        .help("timecode at which to start collecting frames"),
                 ),
         )
         .get_matches();

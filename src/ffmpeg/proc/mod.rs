@@ -38,6 +38,7 @@ fn debug_cmd(name: &str, args: &Vec<String>) {
 
 pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
     use std::str::from_utf8;
+    debug_cmd(name, &args);
     let output = match Command::new(name).args(args).output() {
         Ok(x) => x,
         Err(e) => return Err(OutputError::from(e)),
@@ -63,13 +64,13 @@ pub fn dump(output: Output) -> Result<String, OutputError> {
     Ok(String::from(text))
 }
 
-pub fn write_to_file(path: &Path, output: Output) -> Result<(), OutputError> {
+pub fn write_to_file(path: &Path, output: &Vec<u8>) -> Result<(), OutputError> {
     use std::error::Error;
     use std::fs::File;
     use std::io::Write;
 
     let display = path.display();
-    let bytes = output.stdout.as_slice();
+    let bytes = output.as_slice();
     let mut file = match File::create(path) {
         Err(why) => panic!("couldn't create {}: {}", display, why.description()),
         Ok(file) => file,
