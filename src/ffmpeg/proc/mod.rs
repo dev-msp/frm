@@ -38,7 +38,6 @@ fn debug_cmd(name: &str, args: &Vec<String>) {
 
 pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
     use std::str::from_utf8;
-    debug_cmd(name, &args);
     let output = match Command::new(name).args(args).output() {
         Ok(x) => x,
         Err(e) => return Err(OutputError::from(e)),

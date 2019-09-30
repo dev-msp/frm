@@ -32,6 +32,7 @@ pub enum Dim {
     W(u32),
 }
 
+#[allow(dead_code)]
 pub enum CommandOption {
     LogLevel(Level),
     Position(u32),

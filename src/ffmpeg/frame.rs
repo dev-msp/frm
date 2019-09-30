@@ -63,6 +63,7 @@ impl<'a> Frame<'a> {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn write_file(&mut self, output: String) -> Result<(), ErrorKind> {
         let path = path::non_existing_path(&output)?;
         self.write()?;
