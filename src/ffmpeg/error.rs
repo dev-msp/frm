@@ -1,18 +1,23 @@
 use super::proc::OutputError;
 use std::error::Error;
+use super::path::Error as PathError;
 
 #[derive(Debug)]
 pub enum ErrorKind {
     ArgumentError,
-    PathNotUnicode,
-    FileAlreadyExists(String),
-    FileDoesNotExist(String),
+    Path(PathError),
     Output(OutputError),
 }
 
 impl From<OutputError> for ErrorKind {
     fn from(e: OutputError) -> Self {
         ErrorKind::Output(e)
+    }
+}
+
+impl From<PathError> for ErrorKind {
+    fn from(e: PathError) -> Self {
+        ErrorKind::Path(e)
     }
 }
 

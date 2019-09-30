@@ -1,5 +1,5 @@
 use super::cmd::*;
-use super::path;
+use super::path::{existing_path, non_existing_path, Error as PathError};
 use super::proc;
 use super::ErrorKind;
 
@@ -39,8 +39,9 @@ impl<'a> Command for Frame<'a> {
 
 impl<'a> Frame<'a> {
     pub fn new(input: &'a String, timecode: u32) -> Result<Self, ErrorKind> {
-        path::existing_path(input)
-            .and_then(|input_path| input_path.to_str().ok_or(ErrorKind::PathNotUnicode))
+        existing_path(input)
+            .and_then(|input_path| input_path.to_str().ok_or(PathError::PathNotUnicode))
+            .map_err(|e| ErrorKind::from(e))
             .and_then(|input_path| {
                 Ok(Frame {
                     timecode: timecode,
@@ -65,7 +66,7 @@ impl<'a> Frame<'a> {
 
     #[allow(dead_code)]
     pub fn write_file(&mut self, output: String) -> Result<(), ErrorKind> {
-        let path = path::non_existing_path(&output)?;
+        let path = non_existing_path(&output)?;
         self.write()?;
         match &self.data {
             Some(ImageData { data }) => {
