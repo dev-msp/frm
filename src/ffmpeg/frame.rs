@@ -55,7 +55,7 @@ impl<'a> Frame<'a> {
         self.data.is_some()
     }
 
-    pub fn write(&mut self) -> Result<(), ErrorKind> {
+    pub fn read(&mut self) -> Result<(), ErrorKind> {
         if self.has_data() {
             return Ok(());
         }
@@ -67,7 +67,7 @@ impl<'a> Frame<'a> {
     #[allow(dead_code)]
     pub fn write_file(&mut self, output: String) -> Result<(), ErrorKind> {
         let path = non_existing_path(&output)?;
-        self.write()?;
+        self.read()?;
         match &self.data {
             Some(ImageData { data }) => {
                 proc::write_to_file(path, &data).map_err(|e| ErrorKind::from(e))
