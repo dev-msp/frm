@@ -32,7 +32,11 @@ fn handle_sample(matches: &clap::ArgMatches) -> CommandResult {
 
     let end: Option<u32> = matches.value_of("END").map(|s| s.parse()).transpose()?;
 
-    sample::sample_video(&input, &sample::SampleWindow { start, end, n })?;
+    sample::sample_video(&input, &sample::SampleWindow { start, end, n })?
+        .into_iter()
+        .map(|(k, mut v)| v.write_file(format!("output_{}.jpeg", k)))
+        .fold(Ok(()), |acc, next| acc.and(next))?;
+
     Ok(())
 }
 
