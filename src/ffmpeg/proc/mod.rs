@@ -6,7 +6,7 @@ use std::str::{FromStr, Utf8Error};
 #[derive(Debug)]
 pub enum OutputError {
     Io(String),
-    NonzeroExit(String),
+    NonzeroExit(i32, String),
     SigTerm,
     Utf8(String),
     Parse(String),
@@ -46,12 +46,8 @@ pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
     match output.status.code() {
         Some(0) => Ok(output),
         Some(code) => {
-            if let Ok(text) = from_utf8(output.stderr.as_slice()) {
-                let message = format!("exit {}: {}", code, String::from(text).trim());
-                Err(OutputError::NonzeroExit(message))
-            } else {
-                Err(OutputError::NonzeroExit(String::new()))
-            }
+            let text = from_utf8(output.stderr.as_slice()).unwrap_or("");
+            Err(OutputError::NonzeroExit(code, String::from(text.trim())))
         }
         None => Err(OutputError::SigTerm),
     }
