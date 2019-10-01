@@ -1,11 +1,22 @@
 extern crate clap;
 extern crate rayon;
+extern crate warp;
+extern crate handlebars;
+#[macro_use]
+extern crate serde_json;
+extern crate serde;
 
 mod ffmpeg;
+mod server;
 
 use ffmpeg::ErrorKind as FfmpegError;
 
 type CommandResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
+
+fn handle_serve(_: &clap::ArgMatches) -> CommandResult {
+    server::serve();
+    Ok(())
+}
 
 fn handle_duration(matches: &clap::ArgMatches) -> CommandResult<f32> {
     match matches.value_of("INPUT") {
@@ -44,6 +55,9 @@ fn main() -> CommandResult {
     use clap::{App, Arg, SubCommand};
     let app_m = App::new("frm")
         .subcommand(
+            SubCommand::with_name("serve")
+        )
+        .subcommand(
             SubCommand::with_name("duration").arg(
                 Arg::with_name("INPUT")
                     .required(true)
@@ -81,6 +95,7 @@ fn main() -> CommandResult {
         .get_matches();
 
     match app_m.subcommand() {
+        ("serve", Some(sub_m)) => { handle_serve(sub_m) },
         ("duration", Some(sub_m)) => {
             println!("{}", handle_duration(sub_m)?);
             Ok(())
