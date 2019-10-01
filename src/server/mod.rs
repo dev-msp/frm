@@ -22,19 +22,13 @@ where
         .unwrap()
 }
 
-pub fn serve() {
-    let template = "<!DOCTYPE html>
-                    <html>
-                      <head>
-                        <title>Warp Handlebars template example</title>
-                      </head>
-                      <body>
-                        <h1>Hello {{user}}!</h1>
-                      </body>
-                    </html>";
+struct ImageStore {
 
+}
+
+pub fn serve() {
     let mut hb = Handlebars::new();
-    hb.register_template_string("template.html", template)
+    hb.register_template_file("sample", "./templates/sample.hbs")
         .unwrap();
 
     let hb = Arc::new(hb);
@@ -44,7 +38,7 @@ pub fn serve() {
     let route = warp::get2()
         .and(warp::path::end())
         .map(|| WithTemplate {
-            name: "template.html",
+            name: "sample",
             value: json!({"user": "Warp"}),
         })
         .map(handlebars);

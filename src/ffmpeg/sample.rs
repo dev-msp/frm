@@ -5,12 +5,12 @@ use rayon::prelude::*;
 use std::collections::HashMap;
 
 pub struct SampleWindow {
+    pub n: u32,
     pub start: u32,
     pub end: Option<u32>,
-    pub n: u32,
 }
 
-fn sample_timecodes(start: u32, end: u32, n: u32) -> Vec<u32> {
+pub fn sample_timecodes(start: u32, end: u32, n: u32) -> Vec<u32> {
     let start_f = start as f32;
     let end_f = end as f32;
     let n_f = n as f32;
