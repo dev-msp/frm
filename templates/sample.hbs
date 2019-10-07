@@ -4,6 +4,10 @@
     <title>Warp Handlebars template example</title>
   </head>
   <body>
-    <h1>Hello {{user}}!</h1>
+    {{#each codes}}
+    <a href="/from/{{lookup this 0}}/to/{{lookup this 1}}">
+      <img src="/frame/{{lookup this 0}}" alt="">
+    </a>
+    {{/each}}
   </body>
 </html>

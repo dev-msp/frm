@@ -1,7 +1,8 @@
 extern crate clap;
-extern crate rayon;
-extern crate warp;
 extern crate handlebars;
+extern crate rayon;
+#[macro_use]
+extern crate warp;
 #[macro_use]
 extern crate serde_json;
 extern crate serde;

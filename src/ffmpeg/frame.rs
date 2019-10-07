@@ -27,13 +27,14 @@ impl<'a> Command for Frame<'a> {
             Position(self.timecode),
             Input(String::from(self.input)),
             Frames(1),
+            Scale(Dim::W(480)),
             Format(FormatKind::JPEG),
             Output(Destination::Stdout),
         ]
         .into_iter()
         .map(|o| o.process_option())
         .flatten()
-        .collect::<Vec<String>>()
+        .collect()
     }
 }
 
@@ -62,6 +63,15 @@ impl<'a> Frame<'a> {
         let data = self.execute()?.stdout;
         self.data = Some(ImageData::new(data));
         Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn write(mut self) -> Result<Vec<u8>, ErrorKind> {
+        self.read()?;
+        match self.data {
+            Some(ImageData { data }) => Ok(data),
+            None => panic!("write did not succeed"),
+        }
     }
 
     #[allow(dead_code)]
