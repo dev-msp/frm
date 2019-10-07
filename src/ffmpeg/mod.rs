@@ -3,7 +3,6 @@ mod error;
 pub mod frame;
 mod path;
 pub mod proc;
-pub mod sample;
 
 pub use error::ErrorKind;
 
