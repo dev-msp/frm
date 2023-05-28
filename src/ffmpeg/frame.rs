@@ -39,10 +39,10 @@ impl<'a> Command for Frame<'a> {
 }
 
 impl<'a> Frame<'a> {
-    pub fn new(input: &'a String, timecode: u32) -> Result<Self, ErrorKind> {
+    pub fn new(input: &'a str, timecode: u32) -> Result<Self, ErrorKind> {
         existing_path(input)
             .and_then(|input_path| input_path.to_str().ok_or(PathError::PathNotUnicode))
-            .map_err(|e| ErrorKind::from(e))
+            .map_err(ErrorKind::from)
             .and_then(|input_path| {
                 Ok(Frame {
                     timecode: timecode,

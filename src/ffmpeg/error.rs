@@ -1,6 +1,6 @@
+use super::path::Error as PathError;
 use super::proc::OutputError;
 use std::error::Error;
-use super::path::Error as PathError;
 
 #[derive(Debug)]
 pub enum ErrorKind {

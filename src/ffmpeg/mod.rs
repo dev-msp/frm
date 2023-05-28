@@ -6,7 +6,7 @@ pub mod proc;
 
 pub use error::ErrorKind;
 
-pub fn duration(path_str: &String) -> Result<f32, ErrorKind> {
+pub fn duration(path_str: &str) -> Result<f32, ErrorKind> {
     let path = path::existing_path(path_str)?;
 
     let args = vec![
@@ -19,7 +19,7 @@ pub fn duration(path_str: &String) -> Result<f32, ErrorKind> {
         path.to_str().unwrap(),
     ]
     .into_iter()
-    .map(|s| String::from(s))
+    .map(String::from)
     .collect::<Vec<_>>();
 
     let output = proc::run("ffprobe", args)?;

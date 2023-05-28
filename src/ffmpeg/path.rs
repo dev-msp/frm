@@ -9,8 +9,8 @@ pub enum Error {
 
 use Error::*;
 
-fn check_path<'a>(raw_str: &'a String) -> Result<&'a Path, Error> {
-    let path = Path::new(raw_str.as_str());
+fn check_path<'a>(raw_str: &'a str) -> Result<&'a Path, Error> {
+    let path = Path::new(raw_str);
     let path_str = path.to_str();
     if path_str.is_some() {
         Ok(path)
@@ -19,7 +19,7 @@ fn check_path<'a>(raw_str: &'a String) -> Result<&'a Path, Error> {
     }
 }
 
-pub fn existing_path<'a>(raw_str: &'a String) -> Result<&'a Path, Error> {
+pub fn existing_path<'a>(raw_str: &'a str) -> Result<&'a Path, Error> {
     let path = check_path(raw_str)?;
     if !path.exists() {
         Err(FileDoesNotExist(raw_str.to_owned()))

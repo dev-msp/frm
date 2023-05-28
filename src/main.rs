@@ -27,7 +27,7 @@ fn handle_serve(matches: &clap::ArgMatches) -> CommandResult {
 fn main() -> CommandResult {
     use clap::{App, Arg, SubCommand};
 
-    let ref input_arg = Arg::with_name("INPUT")
+    let input_arg = &Arg::with_name("INPUT")
         .required(true)
         .help("Sets the input file to use");
 

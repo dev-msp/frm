@@ -60,14 +60,13 @@ pub fn dump(output: Output) -> Result<String, OutputError> {
 }
 
 pub fn write_to_file(path: &Path, output: &Vec<u8>) -> Result<(), OutputError> {
-    use std::error::Error;
     use std::fs::File;
     use std::io::Write;
 
     let display = path.display();
     let bytes = output.as_slice();
     let mut file = match File::create(path) {
-        Err(why) => panic!("couldn't create {}: {}", display, why.description()),
+        Err(why) => panic!("couldn't create {}: {}", display, why),
         Ok(file) => file,
     };
 

@@ -3,7 +3,6 @@ use serde::Serialize;
 use warp::{self, filters::BoxedFilter, Filter, Reply};
 
 use std::collections::HashMap;
-use std::error::Error;
 use std::sync::Arc;
 
 use super::ffmpeg::{duration, frame};
@@ -18,9 +17,9 @@ where
     T: Serialize,
 {
     hbs.render(template.name, &template.value)
-        .map(|s| Some(s))
-        .unwrap_or_else(|err| Some(err.description().to_owned()))
-        .map(|s| warp::reply::html(s))
+        .map(Some)
+        .unwrap_or_else(|err| Some(err.to_string()))
+        .map(warp::reply::html)
         .unwrap()
 }
 
@@ -49,15 +48,15 @@ pub fn sample_timecodes(start: u32, end: u32, n: u32) -> Vec<(u32, u32)> {
 #[allow(dead_code)]
 type FrameHash<'a> = HashMap<u32, frame::Frame<'a>>;
 
-fn render_frame(file_str: Arc<String>, i: u32) -> impl Reply {
-    frame::Frame::new(&file_str.to_owned(), i)
+fn render_frame(file_str: String, i: u32) -> impl Reply {
+    frame::Frame::new(file_str.as_ref(), i)
         .and_then(|frm| frm.write())
         .map(|r| warp::reply::with_header(r, "Content-Type", "image/jpeg"))
         .unwrap()
 }
 
-pub struct FrameServer<'a> {
-    file: &'a str,
+pub struct FrameServer {
+    file: String,
 }
 
 impl<'a> FrameServer<'a> {
@@ -89,7 +88,7 @@ impl<'a> FrameServer<'a> {
         let hb = Arc::new(hb);
         let handlebars = move |with_template| render(with_template, hb.clone());
 
-        let file = self.file.to_owned();
+        let file = self.file.clone();
 
         let root = warp::get2()
             .and(warp::path::end())
