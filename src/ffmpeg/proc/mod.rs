@@ -1,43 +1,39 @@
 use std::io;
 use std::path::Path;
 use std::process::{Command, Output};
-use std::str::{FromStr, Utf8Error};
+use std::str::{from_utf8, FromStr, Utf8Error};
 
-#[derive(Debug)]
+use thiserror::Error;
+
+#[derive(Debug, Error)]
 pub enum OutputError {
-    Io(String),
+    #[error("io error: {0}")]
+    Io(#[from] io::Error),
+
+    #[error("non-zero exit {0}: {1}")]
     NonzeroExit(i32, String),
+
+    #[error("signal terminated")]
     SigTerm,
-    Utf8(String),
+
+    #[error("utf-8 error: {0}")]
+    Utf8(#[from] Utf8Error),
+
+    #[error("parse error: {0}")]
     Parse(String),
 }
 
-impl From<io::Error> for OutputError {
-    fn from(e: io::Error) -> Self {
-        let message = format!("{}", e);
-        OutputError::Io(message)
-    }
-}
-
-impl From<Utf8Error> for OutputError {
-    fn from(e: Utf8Error) -> Self {
-        let message = format!("Invalid UTF-8 byte at index {}", e.valid_up_to());
-        OutputError::Utf8(message)
-    }
-}
-
 #[allow(dead_code)]
-fn debug_cmd(name: &str, args: &Vec<String>) {
+fn debug_cmd(name: &str, args: &[String]) {
     println!(
         "{} {}",
         name,
-        args.into_iter()
+        args.iter()
             .fold(String::new(), |acc, x| format!("{} {}", acc, x))
     );
 }
 
 pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
-    use std::str::from_utf8;
     let output = match Command::new(name).args(args).output() {
         Ok(x) => x,
         Err(e) => return Err(OutputError::from(e)),
@@ -54,7 +50,6 @@ pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
 }
 
 pub fn dump(output: Output) -> Result<String, OutputError> {
-    use std::str::from_utf8;
     let text = from_utf8(output.stdout.as_slice())?;
     Ok(String::from(text))
 }
@@ -70,7 +65,7 @@ pub fn write_to_file(path: &Path, output: &Vec<u8>) -> Result<(), OutputError> {
         Ok(file) => file,
     };
 
-    file.write_all(bytes).map_err(|e| OutputError::from(e))
+    file.write_all(bytes).map_err(OutputError::from)
 }
 
 pub fn parse_from_output<T>(output: Output) -> Result<T, OutputError>
@@ -84,7 +79,7 @@ where
     match text.trim().parse::<T>() {
         Ok(v) => Ok(v),
         Err(e) => {
-            let message = format!("{} ({})", e.to_string(), text);
+            let message = format!("{e} ({text})");
             Err(OutputError::Parse(message))
         }
     }

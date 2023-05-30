@@ -79,9 +79,7 @@ impl<'a> Frame<'a> {
         let path = non_existing_path(&output)?;
         self.read()?;
         match &self.data {
-            Some(ImageData { data }) => {
-                proc::write_to_file(path, &data).map_err(|e| ErrorKind::from(e))
-            }
+            Some(ImageData { data }) => proc::write_to_file(path, data).map_err(ErrorKind::from),
             None => panic!("write did not succeed"),
         }
     }

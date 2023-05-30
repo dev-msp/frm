@@ -7,7 +7,7 @@ pub trait Command {
     fn build(&self) -> Vec<String>;
     fn execute(&self) -> Result<Output, ErrorKind> {
         let args = self.build();
-        proc::run("ffmpeg", args).map_err(|e| ErrorKind::Output(e))
+        proc::run("ffmpeg", args).map_err(ErrorKind::Output)
     }
 }
 
@@ -19,20 +19,17 @@ pub enum Destination {
     Stdout,
 }
 
-#[allow(dead_code)]
 pub enum FormatKind {
-    PNG,
-    GIF,
-    JPEG,
+    Png,
+    Gif,
+    Jpeg,
 }
 
-#[allow(dead_code)]
 pub enum Dim {
     H(u32),
     W(u32),
 }
 
-#[allow(dead_code)]
 pub enum CommandOption {
     LogLevel(Level),
     Position(u32),
@@ -54,9 +51,9 @@ impl fmt::Display for Level {
 impl fmt::Display for FormatKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            FormatKind::PNG => write!(f, "apng"),
-            FormatKind::GIF => write!(f, "gif"),
-            FormatKind::JPEG => write!(f, "singlejpeg"),
+            FormatKind::Png => write!(f, "apng"),
+            FormatKind::Gif => write!(f, "gif"),
+            FormatKind::Jpeg => write!(f, "singlejpeg"),
         }
     }
 }

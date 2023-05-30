@@ -1,34 +1,16 @@
+use thiserror::Error;
+
 use super::path::Error as PathError;
 use super::proc::OutputError;
-use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ErrorKind {
+    #[error("argument error")]
     ArgumentError,
-    Path(PathError),
-    Output(OutputError),
-}
 
-impl From<OutputError> for ErrorKind {
-    fn from(e: OutputError) -> Self {
-        ErrorKind::Output(e)
-    }
-}
+    #[error("path error: {0}")]
+    Path(#[from] PathError),
 
-impl From<PathError> for ErrorKind {
-    fn from(e: PathError) -> Self {
-        ErrorKind::Path(e)
-    }
-}
-
-impl std::fmt::Display for ErrorKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-impl Error for ErrorKind {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        None
-    }
+    #[error("output error: {0}")]
+    Output(#[from] OutputError),
 }

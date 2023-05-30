@@ -1,12 +1,3 @@
-extern crate clap;
-extern crate handlebars;
-extern crate rayon;
-#[macro_use]
-extern crate warp;
-#[macro_use]
-extern crate serde_json;
-extern crate serde;
-
 mod ffmpeg;
 mod server;
 
