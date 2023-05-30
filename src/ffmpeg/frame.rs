@@ -1,5 +1,7 @@
+use std::path::PathBuf;
+
 use super::cmd::*;
-use super::path::{existing_path, non_existing_path, Error as PathError};
+use super::path::{existing_path, non_existing_path};
 use super::proc;
 use super::ErrorKind;
 
@@ -13,43 +15,38 @@ impl ImageData {
     }
 }
 
-pub struct Frame<'a> {
+pub struct Frame {
     timecode: u32,
-    input: &'a str,
     data: Option<ImageData>,
+    path: PathBuf,
 }
 
-impl<'a> Command for Frame<'a> {
+impl Command for Frame {
     fn build(&self) -> Vec<String> {
         use CommandOption::*;
         vec![
             LogLevel(Level::Error),
             Position(self.timecode),
-            Input(String::from(self.input)),
+            Input(self.path.to_string_lossy().to_string()),
             Frames(1),
             Scale(Dim::W(480)),
-            Format(FormatKind::JPEG),
+            Format(FormatKind::Png),
             Output(Destination::Stdout),
         ]
         .into_iter()
-        .map(|o| o.process_option())
-        .flatten()
+        .flat_map(|o| o.process_option())
         .collect()
     }
 }
 
-impl<'a> Frame<'a> {
-    pub fn new(input: &'a str, timecode: u32) -> Result<Self, ErrorKind> {
-        existing_path(input)
-            .and_then(|input_path| input_path.to_str().ok_or(PathError::PathNotUnicode))
-            .map_err(ErrorKind::from)
-            .and_then(|input_path| {
-                Ok(Frame {
-                    timecode: timecode,
-                    input: input_path,
-                    data: None,
-                })
-            })
+impl Frame {
+    pub fn new(input: &str, timecode: u32) -> Result<Self, ErrorKind> {
+        let path = existing_path(input)?.to_path_buf();
+        Ok(Frame {
+            timecode,
+            data: None,
+            path,
+        })
     }
 
     pub fn has_data(&self) -> bool {

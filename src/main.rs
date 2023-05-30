@@ -8,7 +8,7 @@ type CommandResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
 fn handle_serve(matches: &clap::ArgMatches) -> CommandResult {
     match matches.value_of("INPUT") {
         Some(file_path) => {
-            server::FrameServer::new(file_path).serve();
+            server::FrameServer::new(file_path.to_string(), 4)?.serve();
             Ok(())
         }
         None => Err(Box::new(FfmpegError::ArgumentError)),
