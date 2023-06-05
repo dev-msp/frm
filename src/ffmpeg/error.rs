@@ -1,4 +1,5 @@
 use thiserror::Error;
+use warp::reject::Reject;
 
 use super::path::Error as PathError;
 use super::proc::OutputError;
@@ -13,4 +14,9 @@ pub enum ErrorKind {
 
     #[error("output error: {0}")]
     Output(#[from] OutputError),
+
+    #[error("unhandled error: {0}")]
+    Unhandled(String),
 }
+
+impl Reject for ErrorKind {}
