@@ -35,7 +35,6 @@ const translateCmd = (cmd: KeyCommand): BisectCommand | undefined => {
 export const reducer: Reducer<Bisect, Command> = (s, a): Bisect => {
 	const cmd = a.type === 'key' ? translateCmd(a) : undefined;
 	if (!cmd) {
-		console.log('bisect rejected', cmd);
 		return s;
 	}
 

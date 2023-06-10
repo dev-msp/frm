@@ -77,8 +77,6 @@ export const resequences: AppEpic<TraversalCommand> = (cmds, state) => {
 
 			let [i, j] = sortStringWithNumbers(selection.value).map((c) => alpha.indexOf(c));
 
-			console.log({ i, j });
-
 			if (i < 0 || j < 0) {
 				throw new Error('should be impossible');
 			}
@@ -106,11 +104,9 @@ const dataDeps: select.Selector<[number, number, number, Grid['interpolation']],
 
 export const data: Epic<Grid, Command, number[]> = (action, state) =>
 	state.pipe(
-		labeledLog('data stream', (x) => JSON.stringify(x, null, 2)),
 		distinctBy(dataDeps),
 		debounceTime(250),
 		map(select.data),
-		labeledLog('stream select.data', (x) => JSON.stringify(x, null, 2)),
 		startWith([]),
 		shareReplay(1)
 	);

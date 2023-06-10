@@ -21,7 +21,6 @@
 	);
 	const dataSource = store.runEpic(epicTx(data), []);
 	$: latestData = $dataSource;
-	$: console.log(latestData);
 </script>
 
 <!-- <div class="debug"> -->

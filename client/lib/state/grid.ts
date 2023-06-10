@@ -28,11 +28,9 @@ export const selectionReducer: Reducer<Selection, Command> = (s, a) => {
 		case 'key': {
 			switch (s.type) {
 				case 'none': {
-					console.log('none');
 					return { type: 'single', value: a.key };
 				}
 				case 'single': {
-					console.log('single');
 					return { type: 'double', value: [s.value, a.key] };
 				}
 				case 'double':
@@ -66,7 +64,6 @@ export const initGrid = (duration: number): Grid => ({
 });
 
 export const gridReducer: Reducer<Grid, Command> = (s, a) => {
-	console.log('called gridReducer with', JSON.stringify({ s, a }, null, 2));
 	const state = {
 		...s,
 		selection: selectionReducer(s.selection, a),

@@ -44,11 +44,7 @@ export class Store<S, A extends { type: string }> {
 		if (this.rootEpicSubscription) {
 			throw new Error('expected only a single root epic');
 		}
-		this.rootEpicSubscription = epic(
-			this.actions$.pipe(labeledLog('all actions', (s) => JSON.stringify(s, null, 2))),
-			this.state$.pipe(labeledLog('all state', (s) => JSON.stringify(s, null, 2)))
-		).subscribe((action) => {
-			console.log('going to dispatch', JSON.stringify(action, null, 2));
+		this.rootEpicSubscription = epic(this.actions$, this.state$).subscribe((action) => {
 			this.dispatch(action);
 		});
 	}
