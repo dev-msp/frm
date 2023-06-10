@@ -1,59 +1,78 @@
-import { filter, fromEvent, map, share } from 'rxjs';
+import { defer, filter, fromEvent, map, share } from 'rxjs';
+import { browserOnly } from '$lib/stream';
+import type { AppEpic } from './state/stream';
 
-export const alpha = 'abcdefghijklmnopqrstuvwxyz';
+export const alpha = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 export type UnknownCommand = {
-	type: 'unknown_keypress';
+	type: 'unmapped_keypress';
 	key: string;
 };
 
 export type TraversalCommand =
 	| { type: 'zoom'; amount: number }
-	| { type: 'shift'; amount: number }
-	| { type: 'set'; from?: number; to?: number; n?: number };
+	| { type: 'shift'; unit: 'grid' | 'second' | 'page'; amount: number }
+	| { type: 'set'; from?: number; to?: number; n?: number }
+	| { type: 'grid'; amount: number }
+	| { type: 'toggleInterpolation' };
 
-export type UiStateCommand = {
-	type: 'clear-input';
-};
+export type UiStateCommand =
+	| {
+			type: 'accept-context';
+			totalDuration: number;
+	  }
+	| {
+			type: 'clear-input';
+	  }
+	| {
+			type: 'reset';
+	  };
 
-export type AlphaCommand = {
-	type: 'alpha';
+export type KeyCommand = {
+	type: 'key';
 	key: string;
 };
 
-export type DataEvent = {
-	type: 'data';
-	payload: [number, number][];
-};
-
-export type Command = UiStateCommand | AlphaCommand | TraversalCommand | DataEvent | UnknownCommand;
+export type Command = UiStateCommand | KeyCommand | TraversalCommand | UnknownCommand;
 
 const commandMapping: Partial<Record<string, Command>> = {
-	'(': { type: 'shift', amount: -5 },
-	')': { type: 'shift', amount: 5 },
-	'[': { type: 'shift', amount: -5 },
-	']': { type: 'shift', amount: 5 },
-	'{': { type: 'shift', amount: -1 },
-	'}': { type: 'shift', amount: 1 },
-	'-': { type: 'zoom', amount: -0.3 },
-	'=': { type: 'zoom', amount: 0.3 },
-	Escape: { type: 'clear-input' }
+	ArrowUp: { type: 'grid', amount: -1 },
+	ArrowDown: { type: 'grid', amount: 1 },
+	PageUp: { type: 'shift', unit: 'page', amount: -1 },
+	PageDown: { type: 'shift', unit: 'page', amount: 1 },
+	'(': { type: 'shift', unit: 'second', amount: -5 },
+	')': { type: 'shift', unit: 'second', amount: 5 },
+	'[': { type: 'shift', unit: 'grid', amount: -1 },
+	']': { type: 'shift', unit: 'grid', amount: 1 },
+	'{': { type: 'shift', unit: 'second', amount: -1 },
+	'}': { type: 'shift', unit: 'second', amount: 1 },
+	'-': { type: 'zoom', amount: -60 },
+	'=': { type: 'zoom', amount: 60 },
+	_: { type: 'zoom', amount: -1 },
+	'+': { type: 'zoom', amount: 1 },
+	Escape: { type: 'clear-input' },
+	Tab: { type: 'toggleInterpolation' }
 };
 
-const eventToCommand = ({ key }: { key: string }): Command =>
-	commandMapping[key] ??
-	(/^[a-z]$/i.test(key) ? { type: 'alpha', key } : undefined) ?? {
-		type: 'unknown_keypress',
+const eventToCommand = (event: KeyboardEvent): Command => {
+	const { key } = event;
+
+	const cmd = commandMapping[key];
+	if (cmd) {
+		event.preventDefault();
+		return cmd;
+	} else if (/^[a-z0-9]$/i.test(key)) {
+		return { type: 'key', key };
+	}
+	return {
+		type: 'unmapped_keypress',
 		key
 	};
+};
 
-export const commands = fromEvent<KeyboardEvent>(document, 'keydown').pipe(
-	filter(({ repeat }) => !repeat),
-	map(eventToCommand),
-	share()
-);
-
-export const alphas = commands.pipe(filter((c): c is AlphaCommand => c.type === 'alpha'));
-export const simpleCommands = commands.pipe(
-	filter((c): c is TraversalCommand => ['zoom', 'shift', 'set'].includes(c.type))
-);
+export const commands: AppEpic<Command> = () =>
+	browserOnly(defer(() => fromEvent<KeyboardEvent>(document, 'keydown'))).pipe(
+		filter(({ repeat }) => !repeat),
+		map(eventToCommand),
+		share()
+	);
