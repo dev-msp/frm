@@ -7,18 +7,20 @@ export type Range = {
 	totalDuration: number;
 };
 
+const RANGE_MIN = 1e3;
+
 export const rangeReducer: Reducer<Range, Command> = (s, a) => {
 	switch (a.type) {
 		case 'clear-input':
 			return {
 				...s,
-				from: 0,
+				from: RANGE_MIN,
 				to: s.totalDuration - 50
 			};
 		case 'set':
 			return {
 				...s,
-				from: Math.max(0, a.from ?? s.from),
+				from: Math.max(RANGE_MIN, a.from ?? s.from),
 				to: Math.min(a.to ?? s.to, s.totalDuration - 10)
 			};
 		case 'shift':
@@ -27,7 +29,7 @@ export const rangeReducer: Reducer<Range, Command> = (s, a) => {
 					const amount = a.amount * 1000;
 					return {
 						...s,
-						from: Math.max(0, s.from + amount),
+						from: Math.max(RANGE_MIN, s.from + amount),
 						to: Math.min(s.totalDuration, s.to + amount)
 					};
 				}
@@ -36,7 +38,7 @@ export const rangeReducer: Reducer<Range, Command> = (s, a) => {
 
 					return {
 						...s,
-						from: Math.max(0, s.from + pageSize * a.amount),
+						from: Math.max(RANGE_MIN, s.from + pageSize * a.amount),
 						to: Math.min(s.totalDuration, s.to + pageSize * a.amount)
 					};
 				}
