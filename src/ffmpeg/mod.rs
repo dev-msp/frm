@@ -3,10 +3,14 @@ mod error;
 pub mod frame;
 mod path;
 pub mod proc;
+pub mod sequence;
+pub mod subtitle;
+
+use std::time::Duration;
 
 pub use error::ErrorKind;
 
-pub fn duration(path_str: &str) -> Result<f32, ErrorKind> {
+pub fn duration(path_str: &str) -> Result<Duration, ErrorKind> {
     let path = path::existing_path(path_str)?;
 
     let args = vec![
@@ -23,8 +27,12 @@ pub fn duration(path_str: &str) -> Result<f32, ErrorKind> {
     .collect::<Vec<_>>();
 
     let output = proc::run("ffprobe", args)?;
-    match proc::parse_from_output(output) {
-        Ok(duration) => Ok(duration),
+    match proc::parse_from_output::<f32>(output) {
+        Ok(secs) if secs > 0_f32 => Ok(Duration::from_millis((secs * 1000.0).floor() as u64)),
+        Ok(_) => Err(ErrorKind::Unhandled(
+            "Weirdly small/negative duration".into(),
+        )),
+
         Err(e) => Err(ErrorKind::Output(e)),
     }
 }

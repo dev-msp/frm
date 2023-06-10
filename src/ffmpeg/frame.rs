@@ -5,6 +5,7 @@ use super::path::{existing_path, non_existing_path};
 use super::proc;
 use super::ErrorKind;
 
+#[derive(Debug, Clone)]
 pub struct ImageData {
     data: Vec<u8>,
 }
@@ -15,6 +16,7 @@ impl ImageData {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Frame {
     timecode: u32,
     data: Option<ImageData>,
@@ -29,7 +31,7 @@ impl Command for Frame {
             Position(self.timecode),
             Input(self.path.to_string_lossy().to_string()),
             Frames(1),
-            Scale(Dim::W(480)),
+            Scale(Dim::W(640)),
             Format(FormatKind::Png),
             Output(Destination::Stdout),
         ]
@@ -43,7 +45,7 @@ impl Frame {
     pub fn new(input: &str, timecode: u32) -> Result<Self, ErrorKind> {
         let path = existing_path(input)?.to_path_buf();
         Ok(Frame {
-            timecode,
+            timecode: timecode.max(1),
             data: None,
             path,
         })
@@ -55,17 +57,20 @@ impl Frame {
 
     pub fn read(&mut self) -> Result<(), ErrorKind> {
         if self.has_data() {
+            // println!("Frame {} benefited from cached data", self.timecode);
             return Ok(());
         }
+
+        // println!("Frame {} did not benefit from cached data", self.timecode);
         let data = self.execute()?.stdout;
         self.data = Some(ImageData::new(data));
         Ok(())
     }
 
     #[allow(dead_code)]
-    pub fn write(mut self) -> Result<Vec<u8>, ErrorKind> {
+    pub fn write(&mut self) -> Result<Vec<u8>, ErrorKind> {
         self.read()?;
-        match self.data {
+        match self.data.clone() {
             Some(ImageData { data }) => Ok(data),
             None => panic!("write did not succeed"),
         }

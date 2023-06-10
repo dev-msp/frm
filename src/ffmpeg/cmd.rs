@@ -1,13 +1,13 @@
 use super::proc;
-use super::ErrorKind;
+use super::proc::OutputError;
 use std::fmt;
 use std::process::Output;
 
 pub trait Command {
     fn build(&self) -> Vec<String>;
-    fn execute(&self) -> Result<Output, ErrorKind> {
+    fn execute(&self) -> Result<Output, OutputError> {
         let args = self.build();
-        proc::run("ffmpeg", args).map_err(ErrorKind::Output)
+        proc::run("ffmpeg", args)
     }
 }
 
@@ -62,18 +62,18 @@ impl CommandOption {
     pub fn process_option(self) -> Vec<String> {
         use CommandOption::*;
         let (k, v) = match self {
-            LogLevel(level) => (Some("-loglevel"), format!("{}", level)),
-            Position(secs) => (Some("-ss"), format!("{}", secs)),
-            Input(p) => (Some("-i"), p),
-            Frames(n) => (Some("-vframes"), format!("{}", n)),
-            Scale(Dim::W(n)) => (Some("-vf"), format!("scale={}:-1", n)),
-            Scale(Dim::H(n)) => (Some("-vf"), format!("scale=-1:{}", n)),
-            Format(format) => (Some("-f"), format!("{}", format)),
+            LogLevel(level) => (Some("-loglevel".into()), format!("{}", level)),
+            Position(ms) => (Some("-ss".into()), format!("{:.3}", (ms as f64) / 1000.0)),
+            Input(p) => (Some("-i".into()), p),
+            Frames(n) => (Some("-vframes".into()), format!("{}", n)),
+            Scale(Dim::W(n)) => (Some("-vf".into()), format!("scale={}:-1", n)),
+            Scale(Dim::H(n)) => (Some("-vf".into()), format!("scale=-1:{}", n)),
+            Format(format) => (Some("-f".into()), format!("{}", format)),
             Output(Destination::Stdout) => (None, String::from("-")),
         };
         let mut out = Vec::new();
         if let Some(k) = k {
-            out.push(String::from(k));
+            out.push(k);
         }
         out.push(v);
         out

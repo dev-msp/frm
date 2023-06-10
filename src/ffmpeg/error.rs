@@ -1,5 +1,8 @@
+use axum::response::IntoResponse;
+use hyper::StatusCode;
 use thiserror::Error;
-use warp::reject::Reject;
+
+use crate::server;
 
 use super::path::Error as PathError;
 use super::proc::OutputError;
@@ -15,8 +18,15 @@ pub enum ErrorKind {
     #[error("output error: {0}")]
     Output(#[from] OutputError),
 
+    #[error("server error: {0}")]
+    Server(#[from] server::Error),
+
     #[error("unhandled error: {0}")]
     Unhandled(String),
 }
 
-impl Reject for ErrorKind {}
+impl IntoResponse for ErrorKind {
+    fn into_response(self) -> axum::response::Response {
+        (StatusCode::INTERNAL_SERVER_ERROR, "there was a problem").into_response()
+    }
+}

@@ -1,21 +1,25 @@
 mod ffmpeg;
 mod server;
+// mod span;
 
 use ffmpeg::ErrorKind as FfmpegError;
 
-type CommandResult<T = ()> = Result<T, Box<dyn std::error::Error>>;
+type CommandResult<T = ()> = Result<T, FfmpegError>;
 
-fn handle_serve(matches: &clap::ArgMatches) -> CommandResult {
+async fn handle_serve(matches: &clap::ArgMatches<'_>) -> CommandResult {
     match matches.value_of("INPUT") {
         Some(file_path) => {
-            server::FrameServer::new(file_path.to_string(), 4)?.serve();
+            server::FrameServer::new(file_path.to_string())?
+                .serve()
+                .await;
             Ok(())
         }
-        None => Err(Box::new(FfmpegError::ArgumentError)),
+        None => Err(FfmpegError::ArgumentError),
     }
 }
 
-fn main() -> CommandResult {
+#[tokio::main]
+async fn main() -> CommandResult {
     use clap::{App, Arg, SubCommand};
 
     let input_arg = &Arg::with_name("INPUT")
@@ -27,7 +31,7 @@ fn main() -> CommandResult {
         .get_matches();
 
     match app_m.subcommand() {
-        ("serve", Some(sub_m)) => handle_serve(sub_m),
-        _ => Err(Box::new(FfmpegError::ArgumentError)),
+        ("serve", Some(sub_m)) => handle_serve(sub_m).await,
+        _ => Err(FfmpegError::ArgumentError),
     }
 }
