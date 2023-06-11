@@ -23,7 +23,6 @@ export const initial: State = {
 export const selectionReducer = (s: Selection, a: Command): Selection => {
 	switch (a.type) {
 		case 'clear-input':
-		case 'toggleInterpolation':
 		case 'shift':
 		case 'zoom':
 		case 'grid':

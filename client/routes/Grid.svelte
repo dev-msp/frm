@@ -48,11 +48,12 @@
 <div class="band">
 	<Band points={latestData} min={0} max={state.range.totalDuration} />
 </div>
+
 <div class="results">
 	<Sequence
 		data={seq.pairwise(latestData)}
-		dim={state.dim}
-		selection={highlightedChars(state.selection)}
+		dim={Math.round(Math.sqrt(latestData.length))}
+		selection={state.input.mode === 'select-range' ? highlightedChars(state.input.selection) : []}
 	/>
 </div>
 
@@ -80,6 +81,11 @@
 <!--   flex-direction: row; -->
 <!-- } -->
 <style lang="postcss">
+	.band {
+		width: 100%;
+		height: min-content;
+	}
+
 	.results {
 		overflow: hidden;
 		justify-self: flex-end;

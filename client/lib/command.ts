@@ -13,8 +13,7 @@ export type TraversalCommand =
 	| { type: 'zoom'; amount: number }
 	| { type: 'shift'; unit: 'grid' | 'second' | 'page'; amount: number }
 	| { type: 'set'; from?: number; to?: number; n?: number }
-	| { type: 'grid'; amount: number }
-	| { type: 'toggleInterpolation' };
+	| { type: 'grid'; amount: number };
 
 export type UiStateCommand =
 	| {
@@ -50,8 +49,7 @@ const commandMapping: Partial<Record<string, Command>> = {
 	'=': { type: 'zoom', amount: 60 },
 	_: { type: 'zoom', amount: -1 },
 	'+': { type: 'zoom', amount: 1 },
-	Escape: { type: 'clear-input' },
-	Tab: { type: 'toggleInterpolation' }
+	Escape: { type: 'clear-input' }
 };
 
 const eventToCommand = (event: KeyboardEvent): Command => {

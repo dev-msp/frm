@@ -8,18 +8,38 @@ export type Selection =
 	| { type: 'single'; value: string }
 	| { type: 'double'; value: [string, string] };
 
+type InputMode = { mode: 'select-range'; selection: Selection } | { mode: 'default' };
+
 export type Grid = {
 	dim: number;
 	range: Range;
-	selection: Selection;
+	input: InputMode;
 	resolution: number;
 	interpolation: 'linear' | 'quadratic';
+};
+
+export const inputModeReducer: Reducer<InputMode, Command> = (s, a) => {
+	if ((['set', 'clear-input', 'accept-context'] as Command['type'][]).includes(a.type)) {
+		return { mode: 'default' };
+	}
+	switch (s.mode) {
+		case 'default':
+			return defaultModeReducer(s, a);
+		case 'select-range':
+			return { ...s, selection: selectionReducer(s.selection, a) };
+	}
+};
+
+const defaultModeReducer: Reducer<InputMode, Command> = (s, a) => {
+	if (a.type === 'key' && a.key === 's') {
+		return { mode: 'select-range', selection: { type: 'none' } };
+	}
+	return s;
 };
 
 export const selectionReducer: Reducer<Selection, Command> = (s, a) => {
 	switch (a.type) {
 		case 'clear-input':
-		case 'toggleInterpolation':
 		case 'shift':
 		case 'zoom':
 		case 'grid':
@@ -57,24 +77,19 @@ export const highlightedChars: Selector<string[], Selection> = (sel) => {
 
 export const initGrid = (duration: number): Grid => ({
 	range: { from: 1e3, to: duration, totalDuration: duration },
-	selection: { type: 'none' },
+	input: { mode: 'default' },
 	resolution: 1e3,
-	dim: 4,
+	dim: 3,
 	interpolation: 'linear'
 });
 
 export const gridReducer: Reducer<Grid, Command> = (s, a) => {
 	const state = {
 		...s,
-		selection: selectionReducer(s.selection, a),
+		input: inputModeReducer(s.input, a),
 		range: rangeReducer(s.range, a)
 	};
 	switch (a.type) {
-		case 'toggleInterpolation':
-			return {
-				...state,
-				interpolation: s.interpolation === 'linear' ? 'quadratic' : 'linear'
-			};
 		case 'grid':
 			return { ...state, dim: state.dim + a.amount };
 		default:

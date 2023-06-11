@@ -1,4 +1,4 @@
-import { Observable, concat, filter, map, merge, mergeAll } from 'rxjs';
+import { Observable, concatAll, filter, from, map, merge, mergeAll } from 'rxjs';
 
 import type { Command } from '$lib/command';
 import type { State } from './';
@@ -41,6 +41,6 @@ export const combineEpics =
 		merge(epics.map((e) => e(actions$, state$))).pipe(mergeAll());
 
 export const sequenceEpics =
-	(...epics: AppEpic<Command>[]): Epic<State, Command, Command> =>
+	<S, A, T>(...epics: Epic<S, A, T>[]): Epic<S, A, T> =>
 	(actions$, state$) =>
-		concat(epics.map((e) => e(actions$, state$))).pipe(mergeAll());
+		from(epics.map((e) => e(actions$, state$))).pipe(concatAll());

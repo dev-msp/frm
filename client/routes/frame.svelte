@@ -1,5 +1,6 @@
 <script lang="ts">
 	import _ from 'lodash';
+	import { fade } from 'svelte/transition';
 	import { imageCache } from '$lib/state/image-cache';
 
 	export let pending: boolean;
@@ -30,6 +31,7 @@
 	{#key image}
 		{#if _.isNumber(image)}
 			<img
+				transition:fade={{ duration: 300 }}
 				style={`--opacity: ${Math.min(1, 1.4 - Math.abs(cursor - image) / 10e3)}`}
 				class:deemph={cursor !== image}
 				on:load={({ currentTarget }) => {

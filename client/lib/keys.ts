@@ -23,8 +23,8 @@ import { Store } from './state/store';
 import { combineEpics, type AppEpic, type Epic } from './state/stream';
 import * as select from './state/select';
 import * as seq from './state/seq';
-import { distinctBy, browserOnly, labeledLog } from './stream';
-import type { Grid } from './state/grid';
+import { distinctBy, browserOnly } from './stream';
+import type { Grid, Selection } from './state/grid';
 
 const loadContext: Observable<{ duration: number }> = browserOnly(
 	fromFetch('/api/context', {
@@ -63,13 +63,20 @@ export const resequences: AppEpic<TraversalCommand> = (cmds, state) => {
 	return state.pipe(
 		map((s) => s.view),
 		filter((s): s is View & { type: 'grid' } => s.type === 'grid'),
-		distinctBy((s) => s.selection.type),
+		distinctBy((s) => {
+			if (s.input.mode === 'default') return 'none';
+			return s.input.selection.type;
+		}),
 		filter(
-			(s): s is View & { type: 'grid'; selection: { type: 'double' } } =>
-				s.selection.type === 'double'
+			(s): s is View & { type: 'grid'; input: { selection: Selection & { type: 'double' } } } =>
+				s.input.mode === 'select-range' && s.input.selection.type === 'double'
 		),
 		concatMap((state) => {
-			const { selection, dim, range } = state;
+			const {
+				input: { selection },
+				dim,
+				range
+			} = state;
 
 			const data = seq
 				.pairwise(select.data(state))

@@ -1,3 +1,6 @@
+import { range } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
+import { easeCubicInOut } from 'd3-ease';
 import type { State } from './';
 import type { Range } from './range';
 import type { Grid } from './grid';
@@ -28,5 +31,7 @@ export const data: Selector<number[], Grid> = (s) => {
 		return seq.range(start, end, size, false);
 	}
 	// quantize to resolution
-	return seq.quadraticSqueeze(start, end, size + 1);
+
+	const scale = scaleLinear().range([start, end]);
+	return range(size).map((t) => scale(easeCubicInOut(t)));
 };

@@ -6,6 +6,7 @@
 	.root {
 		--fg: #f2e3d5;
 		--bg: #222;
+		--svg-stroke-color: var(--fg);
 
 		display: flex;
 		flex-direction: column;
