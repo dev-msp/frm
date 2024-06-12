@@ -1,0 +1,128 @@
+[2m2024-06-12T15:20:12.475880Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:12.476473Z[0m [2m269:[0m received 1009 bytes
+[2m2024-06-12T15:20:12.476757Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1009
+[2m2024-06-12T15:20:12.477851Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1009)
+[2m2024-06-12T15:20:12.479230Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m2.49ms [3mtime.idle[0m[2m=[0m25.0µs
+[2m2024-06-12T15:20:12.479676Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:12.480013Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:12.480245Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:12.728582Z[0m [1mrun[0m[1m{[0m[3mname[0m[2m=[0m"ffprobe" [3margs[0m[2m=[0m["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", "/Volumes/Media/Movies/A Fish Called Wanda (1988)/A.Fish.Called.Wanda.1988.1080p.BluRay.DD5.1.x264-playHD.mkv"][1m}[0m[2m:[0m [2m26:[0m close [3mtime.busy[0m[2m=[0m235ms [3mtime.idle[0m[2m=[0m17.0µs
+[2m2024-06-12T15:20:12.729050Z[0m [1mencode_headers[0m[2m:[0m [2m342:[0m Server::encode status=200, body=Some(Known(20)), req_method=Some(GET)
+[2m2024-06-12T15:20:12.729231Z[0m [1mencode_headers[0m[2m:[0m [2m107:[0m close [3mtime.busy[0m[2m=[0m183µs [3mtime.idle[0m[2m=[0m5.33µs
+[2m2024-06-12T15:20:12.729357Z[0m [2m159:[0m sized write, len = 20
+[2m2024-06-12T15:20:12.729482Z[0m [2m597:[0m buffer.queue [3mself.len[0m[2m=[0m108 [3mbuf.len[0m[2m=[0m20
+[2m2024-06-12T15:20:12.729632Z[0m [2m320:[0m flushed 128 bytes
+[2m2024-06-12T15:20:12.729739Z[0m [2m949:[0m State::close()
+[2m2024-06-12T15:20:12.729849Z[0m [2m732:[0m flushed({role=server}): State { reading: Closed, writing: Closed, keep_alive: Disabled }
+[2m2024-06-12T15:20:12.729960Z[0m [2m739:[0m shut down IO complete
+[2m2024-06-12T15:20:13.462991Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.466535Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.466504Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.466556Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.466504Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.466949Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.466905Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.466890Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.467714Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.467945Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.468172Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468140Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468305Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.468217Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468322Z[0m [2m732:[0m flushed({role=server}): State { reading: Init, writing: Init, keep_alive: Busy }
+[2m2024-06-12T15:20:13.468491Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468478Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.468426Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.468512Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468611Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.468552Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.468577Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.468763Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.468806Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.468852Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.468933Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.468959Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.468993Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m521µs [3mtime.idle[0m[2m=[0m18.0µs
+[2m2024-06-12T15:20:13.469156Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.469132Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.469275Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.469280Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.469280Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.469394Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m600µs [3mtime.idle[0m[2m=[0m10.2µs
+[2m2024-06-12T15:20:13.469464Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.469322Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.469567Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m616µs [3mtime.idle[0m[2m=[0m27.8µs
+[2m2024-06-12T15:20:13.469597Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.469531Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m600µs [3mtime.idle[0m[2m=[0m6.13µs
+[2m2024-06-12T15:20:13.469722Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.469727Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.469622Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.469821Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.469761Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.469821Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.469726Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m577µs [3mtime.idle[0m[2m=[0m6.75µs
+[2m2024-06-12T15:20:13.470106Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.470059Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.470066Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.470267Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.470310Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.470423Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.471191Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m1.16ms [3mtime.idle[0m[2m=[0m16.4µs
+[2m2024-06-12T15:20:13.471192Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m755µs [3mtime.idle[0m[2m=[0m15.6µs
+[2m2024-06-12T15:20:13.471172Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m484µs [3mtime.idle[0m[2m=[0m16.1µs
+[2m2024-06-12T15:20:13.471208Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m1.05ms [3mtime.idle[0m[2m=[0m16.5µs
+[2m2024-06-12T15:20:13.471193Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m561µs [3mtime.idle[0m[2m=[0m16.2µs
+[2m2024-06-12T15:20:13.471482Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m1.05ms [3mtime.idle[0m[2m=[0m16.0µs
+[2m2024-06-12T15:20:13.471432Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m1.42ms [3mtime.idle[0m[2m=[0m16.6µs
+[2m2024-06-12T15:20:13.471477Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m800µs [3mtime.idle[0m[2m=[0m14.6µs
+[2m2024-06-12T15:20:13.471640Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m1.22ms [3mtime.idle[0m[2m=[0m15.6µs
+[2m2024-06-12T15:20:13.471520Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m1.37ms [3mtime.idle[0m[2m=[0m15.0µs
+[2m2024-06-12T15:20:13.471572Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m952µs [3mtime.idle[0m[2m=[0m15.3µs
+[2m2024-06-12T15:20:13.471852Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m1.71ms [3mtime.idle[0m[2m=[0m16.2µs
+[2m2024-06-12T15:20:13.471774Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m1.77ms [3mtime.idle[0m[2m=[0m17.2µs
+[2m2024-06-12T15:20:13.471788Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m1.12ms [3mtime.idle[0m[2m=[0m15.6µs
+[2m2024-06-12T15:20:13.472011Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.471956Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m1.34ms [3mtime.idle[0m[2m=[0m18.3µs
+[2m2024-06-12T15:20:13.472174Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.472389Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.472583Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.472819Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m431µs [3mtime.idle[0m[2m=[0m6.50µs
+[2m2024-06-12T15:20:13.472975Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.473121Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.473325Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.475227Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m223µs [3mtime.idle[0m[2m=[0m19.1µs
+[2m2024-06-12T15:20:13.475558Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m565µs [3mtime.idle[0m[2m=[0m18.0µs
+[2m2024-06-12T15:20:13.475859Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m878µs [3mtime.idle[0m[2m=[0m21.9µs
+[2m2024-06-12T15:20:13.492535Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.492393Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.492177Z[0m [2m191:[0m Conn::read_head
+[2m2024-06-12T15:20:13.492783Z[0m [2m269:[0m received 1066 bytes
+[2m2024-06-12T15:20:13.492858Z[0m [2m269:[0m received 1065 bytes
+[2m2024-06-12T15:20:13.492803Z[0m [2m269:[0m received 1063 bytes
+[2m2024-06-12T15:20:13.492992Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1066
+[2m2024-06-12T15:20:13.493085Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1063
+[2m2024-06-12T15:20:13.493060Z[0m [1mparse_headers[0m[2m:[0m [2m148:[0m Request.parse [3mbytes[0m[2m=[0m1065
+[2m2024-06-12T15:20:13.493215Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1066)
+[2m2024-06-12T15:20:13.493276Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1063)
+[2m2024-06-12T15:20:13.493364Z[0m [1mparse_headers[0m[2m:[0m [2m153:[0m Request.parse Complete(1065)
+[2m2024-06-12T15:20:13.493519Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m532µs [3mtime.idle[0m[2m=[0m7.04µs
+[2m2024-06-12T15:20:13.493499Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m417µs [3mtime.idle[0m[2m=[0m5.12µs
+[2m2024-06-12T15:20:13.493563Z[0m [1mparse_headers[0m[2m:[0m [2m75:[0m close [3mtime.busy[0m[2m=[0m507µs [3mtime.idle[0m[2m=[0m5.17µs
+[2m2024-06-12T15:20:13.493651Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.493642Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.493845Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.493789Z[0m [2m207:[0m parsed 16 headers
+[2m2024-06-12T15:20:13.493875Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.493971Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.493935Z[0m [2m222:[0m incoming body is empty
+[2m2024-06-12T15:20:13.493930Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.494045Z[0m [2m910:[0m remote disabling keep-alive
+[2m2024-06-12T15:20:13.494330Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m87.1µs [3mtime.idle[0m[2m=[0m7.88µs
+[2m2024-06-12T15:20:13.494312Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m155µs [3mtime.idle[0m[2m=[0m8.50µs
+[2m2024-06-12T15:20:13.494311Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m[1mframe_from_file[0m[2m:[0m [2m32:[0m close [3mtime.busy[0m[2m=[0m158µs [3mtime.idle[0m[2m=[0m8.38µs
+[2m2024-06-12T15:20:13.494464Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m313µs [3mtime.idle[0m[2m=[0m8.08µs
+[2m2024-06-12T15:20:13.494498Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m351µs [3mtime.idle[0m[2m=[0m8.21µs
+[2m2024-06-12T15:20:13.494455Z[0m [1mhandle_image[0m[2m:[0m[1mrequest_frame[0m[2m:[0m [2m90:[0m close [3mtime.busy[0m[2m=[0m216µs [3mtime.idle[0m[2m=[0m8.12µs
+[2m2024-06-12T15:20:13.494617Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m458µs [3mtime.idle[0m[2m=[0m22.2µs
+[2m2024-06-12T15:20:13.494644Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m411µs [3mtime.idle[0m[2m=[0m8.38µs
+[2m2024-06-12T15:20:13.494610Z[0m [1mhandle_image[0m[2m:[0m [2m55:[0m close [3mtime.busy[0m[2m=[0m469µs [3mtime.idle[0m[2m=[0m9.04µs

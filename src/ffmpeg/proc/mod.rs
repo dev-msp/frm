@@ -23,16 +23,7 @@ pub enum OutputError {
     Parse(String),
 }
 
-#[allow(dead_code)]
-fn debug_cmd(name: &str, args: &[String]) {
-    println!(
-        "{} {}",
-        name,
-        args.iter()
-            .fold(String::new(), |acc, x| format!("{} {}", acc, x))
-    );
-}
-
+#[tracing::instrument]
 pub fn run(name: &str, args: Vec<String>) -> Result<Output, OutputError> {
     let output = match Command::new(name).args(args).output() {
         Ok(x) => x,

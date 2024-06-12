@@ -1,3 +1,5 @@
+use std::io;
+
 use axum::response::IntoResponse;
 use hyper::StatusCode;
 use thiserror::Error;
@@ -11,6 +13,9 @@ use super::proc::OutputError;
 pub enum ErrorKind {
     #[error("argument error")]
     ArgumentError,
+
+    #[error("IO error: {0}")]
+    Io(#[from] io::Error),
 
     #[error("path error: {0}")]
     Path(#[from] PathError),

@@ -13,12 +13,12 @@ pub enum OutputKind {
 pub struct Sequence {
     path: PathBuf,
     output: OutputKind,
-    start: u32,
-    end: u32,
+    start: usize,
+    end: usize,
 }
 
 impl Sequence {
-    pub fn subtitles<P: Into<PathBuf>>(path: P, start: u32, end: u32) -> Self {
+    pub fn subtitles<P: Into<PathBuf>>(path: P, start: usize, end: usize) -> Self {
         Self {
             path: path.into(),
             output: OutputKind::Text,

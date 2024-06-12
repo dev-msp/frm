@@ -1,3 +1,5 @@
+mod state;
+
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -7,21 +9,12 @@ use axum::{
 };
 
 use hyper::header::CONTENT_TYPE;
-use lru::LruCache;
 use serde_json::json;
 use thiserror::Error;
-use tokio::sync::Mutex;
 
-use std::convert::TryInto;
-use std::sync::Arc;
+use crate::ffmpeg::{cmd::Command, duration, sequence::Sequence};
 
-use crate::ffmpeg::ErrorKind;
-use crate::ffmpeg::{
-    cmd::Command,
-    duration,
-    frame::{self, Frame},
-    sequence::Sequence,
-};
+use self::state::AppState;
 
 #[allow(dead_code)]
 pub struct SampleWindow {
@@ -30,7 +23,7 @@ pub struct SampleWindow {
     pub end: Option<u32>,
 }
 
-fn get_subs(file_str: String, s: u32, e: u32) -> String {
+fn get_subs(file_str: String, s: usize, e: usize) -> String {
     match Sequence::subtitles(file_str, s, e).execute() {
         Ok(bs) => match std::str::from_utf8(&bs.stdout) {
             Ok(s) => s.to_string(),
@@ -40,6 +33,7 @@ fn get_subs(file_str: String, s: u32, e: u32) -> String {
     }
 }
 
+#[derive(Debug)]
 pub struct FrameServer {
     file: String,
 }
@@ -58,42 +52,22 @@ impl Error {
     }
 }
 
-#[derive(Clone)]
-struct AppState {
-    file: String,
-    cache: Arc<Mutex<LruCache<u32, Frame>>>,
-}
-
-impl AppState {
-    async fn request_frame(&self, i: u32) -> Result<Vec<u8>, ErrorKind> {
-        {
-            let mut cache = self.cache.lock().await;
-            if let Some(frame) = cache.get_mut(&i) {
-                // println!("Found {i} in cache");
-                return frame.write();
-            }
-        };
-
-        let mut frame = frame::Frame::new(self.file.as_str(), i)?;
-
-        let mut fc = frame.clone();
-        tokio::task::spawn_blocking(move || fc.read())
-            .await
-            .map_err(|_| ErrorKind::Unhandled("oops".into()))??;
-
-        let mut cache = self.cache.lock().await;
-
-        frame.read()?;
-
-        cache.push(i, frame.clone());
-        // println!("Pushed {i} to cache");
-        frame.write()
+#[tracing::instrument(skip_all)]
+async fn handle_image(State(state): State<AppState>, Path(timestamp): Path<usize>) -> Response {
+    match state.request_frame(timestamp).await {
+        Ok(bytes) => ([(CONTENT_TYPE, "image/png")], bytes).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 
-async fn handle_image(State(state): State<AppState>, Path(timestamp): Path<u32>) -> Response {
-    match state.request_frame(timestamp).await {
-        Ok(bytes) => ([(CONTENT_TYPE, "image/png")], bytes).into_response(),
+#[tracing::instrument(skip(state))]
+async fn handle_image_range(
+    State(state): State<AppState>,
+    Path((from, to, n)): Path<(usize, usize, usize)>,
+) -> Response {
+    let step = (to - from) / n;
+    match state.ingest_frame_range(from, n, step).await {
+        Ok(()) => StatusCode::CREATED.into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
@@ -103,13 +77,15 @@ impl FrameServer {
         Ok(FrameServer { file })
     }
 
+    #[tracing::instrument(skip_all)]
     pub async fn serve(self) {
         let app: Router<AppState, axum::body::Body> = Router::new()
-            .route("/frame/:timestamp", get(handle_image))
+            .route("/frame/:at", get(handle_image))
+            .route("/frames/:from/:to/:step", get(handle_image_range))
             .route(
                 "/context",
                 get(|State(state): State<AppState>| async move {
-                    let d = duration(&state.file);
+                    let d = duration(state.file());
                     match d {
                         Ok(d) => axum::Json(json!({ "duration": d.as_millis() as u32 })),
                         Err(e) => axum::Json(json!({ "error": e.to_string() })),
@@ -118,10 +94,7 @@ impl FrameServer {
             );
 
         let builder = axum::Server::bind(&"127.0.0.1:3030".parse().unwrap());
-        let ready_app = app.with_state::<()>(AppState {
-            file: self.file,
-            cache: Arc::new(Mutex::new(LruCache::new(1200.try_into().unwrap()))),
-        });
+        let ready_app = app.with_state::<()>(AppState::new(self.file.clone(), 1200));
         let server = builder.serve(ready_app.into_make_service());
         server.await.unwrap();
     }

@@ -1,7 +1,8 @@
+use std::io;
 use std::path::PathBuf;
 
 use super::cmd::*;
-use super::path::{existing_path, non_existing_path};
+use super::path::non_existing_path;
 use super::proc;
 use super::ErrorKind;
 
@@ -18,9 +19,10 @@ impl ImageData {
 
 #[derive(Debug, Clone)]
 pub struct Frame {
-    timecode: u32,
+    timecode: usize,
     data: Option<ImageData>,
-    path: PathBuf,
+    origin: PathBuf,
+    encoding: FormatKind,
 }
 
 impl Command for Frame {
@@ -29,10 +31,10 @@ impl Command for Frame {
         vec![
             LogLevel(Level::Error),
             Position(self.timecode),
-            Input(self.path.to_string_lossy().to_string()),
+            Input(self.origin.to_string_lossy().to_string()),
             Frames(1),
             Scale(Dim::W(640)),
-            Format(FormatKind::Png),
+            Format(self.encoding.clone()),
             Output(Destination::Stdout),
         ]
         .into_iter()
@@ -42,13 +44,26 @@ impl Command for Frame {
 }
 
 impl Frame {
-    pub fn new(input: &str, timecode: u32) -> Result<Self, ErrorKind> {
-        let path = existing_path(input)?.to_path_buf();
-        Ok(Frame {
-            timecode: timecode.max(1),
-            data: None,
-            path,
-        })
+    pub fn new<I: Into<PathBuf>>(input: I, timecode: usize) -> Result<Self, ErrorKind> {
+        let path = input.into();
+        if path.exists() {
+            Ok(Frame {
+                timecode: timecode.max(1),
+                data: None,
+                origin: path,
+                encoding: FormatKind::Png,
+            })
+        } else {
+            Err(ErrorKind::Io(io::ErrorKind::NotFound.into()))
+        }
+    }
+
+    pub fn timecode(&self) -> usize {
+        self.timecode
+    }
+
+    pub fn set_data(&mut self, data: Vec<u8>) {
+        self.data = Some(ImageData::new(data))
     }
 
     pub fn has_data(&self) -> bool {
@@ -57,11 +72,9 @@ impl Frame {
 
     pub fn read(&mut self) -> Result<(), ErrorKind> {
         if self.has_data() {
-            // println!("Frame {} benefited from cached data", self.timecode);
             return Ok(());
         }
 
-        // println!("Frame {} did not benefit from cached data", self.timecode);
         let data = self.execute()?.stdout;
         self.data = Some(ImageData::new(data));
         Ok(())
