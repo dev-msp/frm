@@ -4,6 +4,8 @@ As in "frame". A fitfully-successful attempt to build a web UI for quickly locat
 
 Powered by FFMPEG.
 
+https://github.com/dev-msp/frm/assets/100043909/86966047-7a52-4795-a2aa-a0e43200211b
+
 # Un-features
 
 - Idiosyncratic
